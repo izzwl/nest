@@ -13,10 +13,13 @@ Including another URLconf
     1. Import the include() function: from django.urls import include, path
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
+from django.conf import settings
 from django.contrib import admin
 from django.urls import path
 from django.urls import include,path
 from authnest.views00 import home
+from django.conf.urls.static import static
+
 
 admin.AdminSite.site_header = "NEST Administrations"
 admin. AdminSite.site_title = "NEST Site Admin"
@@ -28,3 +31,13 @@ urlpatterns = [
     path('purchasing/', include('purchasing.urls00')),
     path('purchasing-v1/', include('purchasing.urls01')),
 ]
+
+if settings.DEBUG:
+    # import debug_toolbar
+    urlpatterns = [
+        # path('gebug/', include(debug_toolbar.urls)),
+        path('home/', home),
+        # For django versions before 2.0:
+        # url(r'^__debug__/', include(debug_toolbar.urls)),
+
+    ] + urlpatterns + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

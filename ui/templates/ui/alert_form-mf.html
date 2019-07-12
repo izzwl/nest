@@ -1,0 +1,15 @@
+{% if messages %}
+
+    {% for message in messages %}
+    <div id="msg-alert" {% if message.tags %} class="{{ message.tags }}"{% endif %}>
+        {% if message.level == DEFAULT_MESSAGE_LEVELS.ERROR %}
+          <p style="color:red;"><i class="fa fa-times-circle"></i> {{ message }}</p>
+        {% elif message.level == DEFAULT_MESSAGE_LEVELS.WARNING %}
+          <p style="color:yellow;"><i class="fa fa-excalamtion-circle"></i> {{ message }}</p>
+        {% elif message.level == DEFAULT_MESSAGE_LEVELS.SUCCESS %}
+          <p style="color:lime;"><i class="fa fa-check-circle"></i> {{ message }}</p>
+        {% endif %}
+    </div>
+    {% endfor %}
+
+{% endif %}

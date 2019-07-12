@@ -1,0 +1,98 @@
+{% extends 'ui/base.html' %}
+{% load static %}
+{% load mathfilters %}
+{% block navbar %}
+
+{% endblock %}
+{% block content %}
+<style>
+  /* .table-print td{
+    border-top: solid grey 1pt !important;
+    border-bottom: solid grey 1pt !important;
+  } */
+  .table-print th{
+    border-top: solid black 1pt !important;
+    border-bottom: solid black 1pt !important;
+  }
+  .table-inside td{
+    border:none !important;
+  }
+</style>
+<div class="container" style="width:210mm;">
+  <div class="row justify-content-center">
+    <div class="col">
+
+          <div id="printarea">
+            <table class="table table-sm table-print" >
+              <thead>
+                <tr>
+                  <td colspan="6" class="text-center" style="border:none!important"><b> MATERIAL-RECEIVING-RECORD </b></td>
+                </tr>
+                <tr>
+                  <td colspan="6" style="border:none!important">
+                    <table class="table table-sm table-inside">
+                      <tr>
+                        <td>P.O#</td><td>: {{obj.c_po}}</td><td></td>
+                        <td>INVOICE#</td><td>: {{obj.c_invoice}}</td>
+                      </tr>
+                      <tr>
+                        <td>DATE</td><td>: {{obj.d_received|date:"d b y"|upper}}</td><td></td>
+                        <td>PACKING-LIST</td><td>: {{obj.c_packinglist}}</td>
+                      </tr>
+                      <tr>
+                        <td>FROM</td><td>: {{ivr.vendor}}</td><td></td>
+                        <td>AWB/BL/SJ</td><td>: {{obj.c_awb}}</td>
+                      </tr>
+                      <tr>
+                        <td></td><td> &nbsp; {{ivr.vendorname}}</td><td></td>
+                        <td>BOX#</td><td>: {{obj.c_boxno}}</td>
+                      </tr>
+                    </table>
+                  </td>
+                </tr>
+                <tr>
+                  <th style="width:15mm;" class=" text-right">ITEM#</th>
+                  <th class="">PART-NUMBER<br>PART-DESCRIPTION</th>
+                  <th style="width:10mm;" class=" text-right">CND</th>
+                  <th style="width:40mm;" class=" text-right">QUANTITY<br>RECV/ACC/RJECT</th>
+                  <th style="width:10mm;" class="">UM</th>
+                  <th style="width:40mm;" class="">BIN#<br>R-VCHR#/DR#</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for in72 in obj.tmin72_set.all  %}
+                <tr>
+                  <td class="text-right">{{in72.i_itemno}}</td>
+                  <td>{{in72.c_partnumber}}<br>{{in72.ivr.description}}</td>
+                  <td class="text-center">{{in72.tmin73.c_cond}}</td>
+                  <td class="text-right">{{in72.i_qreceived}}<br>{{in72.tmin73.i_qacc|default:'0.0'}}<br>{{in72.i_qreceived|sub:in72.tmin73.i_qacc|default:'0.0'}}<br></td>
+                  <td>{{in72.n_um}}</td>
+                  <td></td>
+                </tr>
+                {% endfor %}
+                <tr>
+                  <td colspan="6" style="border:none!important;"><br><br><br>CERT/DOC : N/A<br><br><br><br></td>
+                </tr>
+                <tr>
+                  <td colspan="6" style="border:none!important;">
+                    <table class="table table-sm table-inside">
+                      <tr>
+                        <td class="text-center"><br><br>RECEIVED-BY:<br><br><br><br>(..............................)</td>
+                        <td class="text-center"><br><br>INSPECTED-BY:<br><br><br><br>(..............................)</td>
+                        <td class="text-center"><br><br>STORED-BY:<br><br><br><br>(..............................)</td>
+                      </tr>
+                    </table>
+                  </td>
+                </tr>
+              </tbody>
+
+            </table>
+          </div>
+
+    </div>
+  </div>
+</div>
+{% endblock %}
+{% block script %}
+{{ block.super }}
+{% endblock %}

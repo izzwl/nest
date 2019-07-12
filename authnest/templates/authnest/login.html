@@ -1,0 +1,38 @@
+{% extends 'ui/base.html' %}
+{% load static %}
+{% block navbar %}
+{% if request.GET.modal != 'Y' %}
+  {{ block.super }}
+{% endif %}
+{% endblock %}
+{% block content %}
+<div class="background-login">
+<div class="container content">
+    <div class="row justify-content-center">
+        <div class="col-9 col-md-6 col-lg-4">
+            <form method="post">
+              {% csrf_token %}
+                <img style="width:200px;" src="{% static 'nest.png' %}">
+                <p style="margin-top: 0.5rem;">NTP ENTERPRISE SYSTEM TECHNOLOGY</p>
+                {% include "ui/alert.html" %}
+                {{ form.nik }}
+                {{ form.password }}
+                <br><button type="submit" class="btn btn-primary mt-2" style="padding: 0.35rem 2rem;">Log-in</button>
+            </form>
+        </div>
+    </div>
+</div>
+</div>
+{% endblock %}
+{% block script %}
+  {{ block.super }}
+  <script>
+    $(document).ready(function(){
+
+      $("#msg-alert").fadeTo(2000, 500).slideUp(500, function(){
+          $("#msg-alert").slideUp(500);
+      });
+
+    });
+  </script>
+{% endblock %}

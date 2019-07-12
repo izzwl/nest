@@ -1,0 +1,61 @@
+{% extends 'ui/base.html' %}
+{% load static %}
+{% load custom_tags %}
+{% block content %}
+<style>
+  .field-func{
+    width: auto !important;
+  }
+</style>
+<div class="container content">
+    <div class="pure-g" style="background-color:black">
+      <div class="pure-u-2-3">
+        <div class="form-mf-body py-2">
+
+        <pre>  IN76                     LIST OF DISCREPANCY REPORT                            </pre>
+        <pre>                                                                                 </pre>
+        <pre>                                                                                 </pre>
+        <pre>     --------------------------------------------------------------------------- </pre>
+        <pre>       DATE    INCOMING-PART#      COND MASTER#  ITM   DR-QTY  UM     DRNO   STS </pre>
+        <pre>     --------------------------------------------------------------------------- </pre>
+        {% for ins in in76_instances  %}
+        <pre>     {{ins.d_release|date:"d m y"}}  {{ins.f_in73.f_in72.c_partnumber|ljust:20}}  {{ins.f_in73.c_cond}}  {{ins.f_in73.f_in72.f_in71.c_po}} {{ins.f_in73.f_in72.i_itemno|stringformat:".3d"}}  {{ins.i_qreject|stringformat:".2f"|rjust:"7"}}  {{ins.f_in73.f_in72.n_um}}   {{ins}}  {{ins.c_sts}}</pre>
+        {% endfor %}
+
+        <pre> </pre>
+        <pre> </pre>
+        <pre> </pre>
+
+
+
+
+          </div>
+        <div class="form-mf-footer">
+
+        </div>
+      </div>
+      <div class="pure-u-1-3">
+        <div class="form-mf-error pl-3">
+          {% include "ui/alert_form-mf.html" %}
+          {{ form.non_field_errors|safe }}
+          {% for field in form %}
+            {% if field.errors %}
+              {{ field.errors|safe }} <strong>{{ field.label_tag }}</strong><br>
+            {% endif %}
+          {% endfor %}
+          {% for fs in in73_formset  %}
+            {{ fs.non_field_errors|safe }}
+            {% for field in fs %}
+              {% if field.errors %}
+                {{ field.errors|safe }} <strong>{{ field.label_tag }}</strong><br>
+              {% endif %}
+            {% endfor %}
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+</div>
+{% endblock %}
+{% block script %}
+{{ block.super }}
+{% endblock %}

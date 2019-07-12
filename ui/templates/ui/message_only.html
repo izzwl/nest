@@ -1,0 +1,21 @@
+{% extends "ui/base.html" %}
+
+{% block navbar %}
+{% endblock %}
+
+{% block content %}
+
+</style>
+	<div class="container" style="min-height:100vh">
+		<div class="row">
+      <div class="col">
+
+        {% block alert %}
+          {% include "ui/alert.html" %}
+        {% endblock %}
+
+  		</div>
+    </div>
+	</div>
+
+{% endblock %}

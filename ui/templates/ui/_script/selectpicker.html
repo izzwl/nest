@@ -1,0 +1,12 @@
+{% load static %}
+<link rel="stylesheet" media="all" type="text/css" href="{% static 'vendor/bootstrap-select-1.13.2/dist/css/bootstrap-select.min.css' %}">
+<script src="{% static 'vendor/bootstrap-select-1.13.2/dist/js/bootstrap-select.js' %}"> </script>
+  <script>
+  $(document).ready(function(){
+    $('.selectmultiple').data('live-search', 'true');
+    $('.selectmultiple').data('actions-box', 'true');
+    $('.select-search').data('live-search', 'true');
+
+    $('select').selectpicker();
+  });
+  </script>

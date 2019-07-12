@@ -1,0 +1,111 @@
+{% extends 'ui/base.html' %}
+{% load static %}
+{% load custom_tags %}
+{% block content %}
+<div class="container content">
+
+  <form class="form-mf" method="post">
+    {% csrf_token %}
+    <div class="pure-g" style="background-color:black">
+      <div class="pure-u-2-3">
+        <div class="form-mf-body py-2">
+<pre> IN72               QUANTITY-RECEIVING-INSPECTION                               </pre>
+<pre>                                                                                </pre>
+<pre>                                                                                </pre>
+<pre> {{ in71_form.func.label }}: {{ in71_form.func }} (A-ADD I-INQ R-APPROVE)                                            </pre>
+<pre>                                                                                </pre>
+<pre> {{ in71_form.c_po.label }}: {{ in71_form.c_po }}                   PACKING#: {{ in71_form.instance.c_packinglist}}                               </pre>
+<pre> {{ in71_form.d_received.label }}: {{ in71_form.d_received }} CREATED: {{ in71_form.instance.d_create|date:"dby"|default:"       "}}  INVOICE#: {{ in71_form.instance.c_invoice|ljust:"20"}} </pre>
+<pre>                                                                                </pre>
+<pre> ITEM# PART#              S/A/C/D  Q-SHIP   UM  Q-RECVD        PART#-IN         </pre>
+<pre> ------------------------------------------------------------------------------ </pre>
+{{ in72_formset.management_form }}
+
+{% for fs in in72_formset  %}
+{% for hidden in fs.hidden_fields  %}
+{{hidden}}
+{% endfor %}
+{% if not forloop.last %}
+<div style="display:none">{{ fs.c_asterik}}{{ fs.c_partnumber }}{{ fs.n_um}}</div>
+<pre> {{ fs.i_itemno }} {{ fs.c_asterik.value|default:"&nbsp;"|safe}} {{ fs.c_partnumber.value|default_if_none:" "|ljust:"20" }} {{ fs.func_sacd }}  {{ fs.i_qship }}  {{ fs.n_um.value|default_if_none:"" }} {{ fs.i_qreceived }} </pre>
+{% endif %}
+{% endfor %}
+
+
+
+
+
+
+          </div>
+        <div class="form-mf-footer">
+          <input class="btn btn-primary ml-2 mb-2" type="submit" name="submit" value="Submit">
+          <a href="{% url 'purchasing:in72' %}" class="btn btn-danger mb-2">Reset</a>
+        </div>
+      </div>
+      <div class="pure-u-1-3">
+        <div class="form-mf-error pl-3">
+          {% include "ui/alert_form-mf.html" %}
+          {{ form.non_field_errors|safe }}
+          {% for field in form %}
+            {% if field.errors %}
+              {{ field.errors|safe }} <strong>{{ field.label_tag }}</strong><br>
+            {% endif %}
+          {% endfor %}
+          {% for fs in in72_formset  %}
+            {{ fs.non_field_errors|safe }}
+            {% for field in fs %}
+              {% if field.errors %}
+                {{ field.errors|safe }} <strong>{{ field.label_tag }}</strong><br>
+              {% endif %}
+            {% endfor %}
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+  </form>
+</div>
+{% endblock %}
+{% block script %}
+{{ block.super }}
+<script>
+
+function ChangeFunc(act){
+  var dischg = 'dischg';
+  if (act == 'change' | act == 'approve' | act == 'print' ){
+    $('#id_c_po').addClass(dischg);
+    $('#id_c_po').attr('readonly','readonly');
+    $('#id_d_received').addClass(dischg);
+    $('#id_d_received').attr('readonly','readonly');
+    // $('#id_d_received').removeClass('hasDatepicker');
+    // $('#id_d_received').removeClass('dateinput-dmy');
+  }else{
+    $('#id_c_po').removeClass(dischg);
+    $('#id_c_po').removeAttr('readonly');
+    $('#id_d_received').removeClass(dischg);
+    $('#id_d_received').removeAttr('readonly');
+    // $('#id_d_received').addClass('hasDatepicker');
+    // $('#id_d_received').addClass('dateinput-dmy');
+  }
+}
+function pad(num, size) {
+    var s = num+"";
+    while (s.length < size) s = "0" + s;
+    return s;
+}
+
+//### Function to add leading zero(s)
+$('#field-func').change(function(){
+  var act = $(this).val();
+  ChangeFunc(act)
+});
+$(document).ready(function(){
+  var act = $('#field-func').val();
+  ChangeFunc(act)
+  // $('.zeropad').val(pad($(this).val(), $(this).data('zeropad')));
+  $('.zeropad').each(function(){
+    $(this).val(pad($(this).val(), $(this).data('zeropad')));
+  });
+});
+</script>
+
+{% endblock %}

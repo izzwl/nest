@@ -1,0 +1,52 @@
+{% extends "ui/base.html" %}
+{% block navbar %}
+
+{% endblock %}
+{% block content %}
+{% load crispy_forms_tags %}
+<style media="screen">
+  p.invalid-feedback{
+    display: block !important;
+  }
+</style>
+	<div class="container" style="min-height:100vh">
+		<div class="row">
+      <div class="col">
+        <h1>{{ judul }} </h1>
+        <hr>
+        {% block alert %}
+          {% include "ui/alert.html" %}
+        {% endblock %}
+        {% crispy form %}
+  		</div>
+    </div>
+	</div>
+{% endblock %}
+
+{% block script %}
+  {{ block.super }}
+
+  {% if multiselectScript %}
+    {% include "ui/_script/selectpicker.html" %}
+  {% endif %}
+  {% if datepickerScript %}
+    {% include "ui/_script/datepicker.html" %}
+  {% endif %}
+
+  <script>
+  $(document).ready(function(){
+
+		$(function () {
+		  $('[data-toggle="popover"]').popover()
+		})
+
+  });
+    $(document).ready(function(){
+
+      $(".msg-alert").fadeTo(8000, 500).slideUp(500, function(){
+          $(".msg-alert").slideUp(500);
+      });
+
+    });
+  </script>
+{% endblock %}

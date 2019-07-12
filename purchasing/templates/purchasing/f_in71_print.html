@@ -1,0 +1,35 @@
+{% extends 'ui/base.html' %}
+{% load static %}
+{% block content %}
+<style>
+  @media print {
+		body * { visibility: hidden; }
+    #printarea { visibility: visible; }
+		#printarea * { visibility: visible; }
+		@page {
+		  size: 9.5in 3.5in;
+      margin: 0;
+		}
+	}
+</style>
+<div class="container content">
+  <div class="row justify-content-center">
+    <div class="col">
+      <div class="card">
+        <div class="card-header">
+          <a href="/purchasing/in71" class="btn btn-primary"><i class="fa fa-chevron-left"></i> Back</a>
+          <button class="btn btn-primary"><i class="fa fa-print"></i> Print</button>
+        </div>
+        <div class="card-body">
+          <div id="printarea">
+            {{ obj }}
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+{% block script %}
+{{ block.super }}
+{% endblock %}

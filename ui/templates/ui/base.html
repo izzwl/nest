@@ -1,0 +1,172 @@
+{% load static %}
+<html>
+<head>
+    {% block head %} {% endblock %}
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+	  <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+
+    <link rel="stylesheet" media="all" type="text/css" href="{% static 'vendor/pure-release-1.0.0/pure-min.css' %}">
+    <link rel="stylesheet" media="all" type="text/css" href="{% static 'vendor/bootstrap-4.3.1-dist/css/bootstrap.min.css' %}">
+    <link rel="stylesheet" media="all" type="text/css" href="{% static 'vendor/font-awesome-4.7.0/css/font-awesome.min.css' %}">
+    <link rel="stylesheet" media="all" type="text/css" href="{% static 'font/Lato/lato.css' %}">
+    <!-- <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lato:300,400,900|Open+Sans"> -->
+
+
+    <link rel="apple-touch-icon" sizes="180x180" href="{% static 'favicon/apple-touch-icon.png' %}">
+    <link rel="icon" type="image/png" sizes="32x32" href="{% static 'favicon/favicon-32x32.png' %}">
+    <link rel="icon" type="image/png" sizes="16x16" href="{% static 'favicon/favicon-16x16.png' %}">
+    <link rel="manifest" href="{% static 'favicon/site.webmanifest' %}">
+    <link rel="mask-icon" href="{% static 'favicon/safari-pinned-tab.svg' %}" color="#5bbad5">
+    <meta name="msapplication-TileColor" content="#da532c">
+    <meta name="theme-color" content="#ffffff">
+    <style>
+      .container.content{
+        min-height:80vh;
+      }
+      .form-mf-body {
+          background-color: black;
+          border-right: white solid 1px;
+      }
+      .form-mf-body p {
+          font-family: monospace !important;
+          text-transform: uppercase;
+          font-size: 12px;
+          padding: 0px;
+          margin: 0px;
+          color:turquoise;
+      }
+      .form-mf-body pre {
+          font-family: monospace !important;
+          text-transform: uppercase;
+          font-size: 12px;
+          padding: 0px;
+          margin: 0px;
+          color:turquoise;
+      }
+      .form-mf-body br {
+          padding: 0px;
+          margin: 0px;
+      }
+      .form-mf-body input {
+          border: 0px;
+          background-color: black;
+          color : lime;
+      }
+      .form-mf-body input:disabled {
+          color : cyan;
+      }
+      .form-mf-body select {
+          border: 0px;
+          -webkit-appearance: none;
+         -moz-appearance: none;
+         /* text-indent: 1px;
+         text-overflow: ''; */
+         background-color: black;
+         color: lime;
+      }
+      .form-mf-body input[type='checkbox']{
+        vertical-align: middle;
+      }
+      .form-mf-body .dischg{
+        pointer-events: none;
+        color: red;
+      }
+      .form-mf-body label{
+        margin:0px;
+      }
+      input[type=number]::-webkit-inner-spin-button,
+      input[type=number]::-webkit-outer-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
+      }
+      .field-func {
+          display: inline !important;
+          width: 1.5rem !important;
+          line-height: 1.5rem !important;
+          padding: 0px;
+          margin: 0px;
+      }
+      .errorlist {
+          display: inline !important;
+          padding: 0px;
+          margin: 0px;
+      }
+      .error {
+          display: inline !important;
+          padding: 0px;
+          margin: 0px;
+      }
+      .form-mf-error{
+        font-family: monospace !important;
+        font-size: 12px;
+        color: red;
+        padding-top: 110px;
+        padding-bottom: 0px;
+        margin-top: 0px;
+        margin-bottom: 0px;
+        height: auto;
+      }
+      .form-mf-error label{
+        margin: 0px;
+
+      }
+      .form-mf-footer{
+        border-right: white solid 1px;
+      }
+      #field-func-sacd{
+        height: 15px;
+      }
+      /* .form-mf-body input:invalid{
+         border: 2px solid red;
+      } */
+    </style>
+    {% block style %}{% endblock %}
+    {% block scripthead %}{% endblock %}
+    <title>{{ title|default:'NEST' }}</title>
+
+</head>
+<body>
+
+  {% block navbar %}
+    {% include "ui/menu.html" %}
+  {% endblock %}
+  {% block header %}{% endblock %}
+
+  {% block content %}{% endblock %}
+
+  {% block footer %}
+    {# {% include "ui/footer.html" %} #}
+  {% endblock %}
+
+  <script src="{% static 'vendor/jquery/jquery-3.2.1.min.js' %}"></script>
+  <script src="{% static 'vendor/bootstrap-4.3.1-dist/js/bootstrap.bundle.min.js' %}"></script>
+  {# <script src="{% static 'vendor/popper.js' %}"></script> #}
+  {% if masking_input %}
+    {% include "ui/_script/masking_input.html" %}
+  {% endif %}
+  {% if datetime_picker %}
+    {% include "ui/_script/datetime_picker.html" %}
+  {% endif %}
+  <script>
+  $(document).ready(function(){
+      {% if mnactive %}
+        $("#{{ mnactive }}").addClass('active');
+      {% endif %}
+      $("#msg-alert").fadeTo(8000, 500).slideUp(500, function(){
+          $("#msg-alert").slideUp(500);
+      });
+      {% if filterlist %}
+        $("#{{ filterlist }}").addClass('active');
+      {% endif %}
+
+  });
+  </script>
+
+  {% block script %}{% endblock %}
+
+</body>
+</html>

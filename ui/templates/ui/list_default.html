@@ -1,0 +1,164 @@
+{% extends "ui/base.html" %}
+
+{% block content %}
+{% load crispy_forms_tags %}
+{% load custom_tags %}
+{% load humanize %}
+{% load i18n %}
+<style media="screen">
+  p.invalid-feedback{
+    display: block !important;
+  }
+</style>
+{% language 'id' %}
+
+	<div class="container" style="min-height:100vh">
+		<div class="row">
+      <div class="col">
+        <h1 >
+            {{ judul }}
+
+          {% if can_add %}<a href="#actionModal" data-toggle="modal" class="btn btn-sm btn-primary " data-href="{{act_link}}add?back={{full_path}}"><i class="fa fa-plus"></i> Add</a>{% endif %}
+
+
+        </h1>
+        {% block alert %}
+          {% include "ui/alert.html" %}
+        {% endblock %}
+        <div class="row">
+          {% if prev_url %}
+            <a class="btn btn-sm btn-primary ml-3" href="{{prev_url}}"><i class="fa fa-chevron-left"></i> Back</a>
+          {% else %}
+            <a class="btn btn-sm btn-primary disabled ml-3" href="#"><i class="fa fa-chevron-left"></i> Back</a>
+          {% endif %}
+          <div class="col">
+            <form class="form form-inline d-inline" method="post">
+              {% csrf_token %}
+              <input type="text" name="kw" id="kw" class="form-control-sm" style="width:100%;" placeholder="search.." value="">
+            </form>
+          </div>
+        </div>
+
+          <table class="table table-sm mt-2">
+            <thead>
+              <tr>
+              {% for k,v in field.items  %}
+                <th>{{ v }}</th>
+              {% endfor %}
+                <th class="text-right">{% if can_approve_all %}<a class="btn btn-sm btn-success " href="{{act_link}}approve_all?back={{full_path}}"><i class="fa fa-check"></i> Approve All</a>{% endif %}</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for o in obj  %}
+              <tr>
+                {% for k,v in field.items  %}
+                  <td class="">{{ o|attr:k }}{% if k == 'c_nikappr' and o|attr:k != '' %}  <i class="fa fa-check-circle text-success"></i>{% endif %}</td>
+                {% endfor %}
+                  <td class="text-right">
+                    <div class="action-btn d-inline">
+
+                      <div class="dropdown d-inline">
+                        <a class="btn btn-primary btn-sm dropdown-toggle" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            Action
+                        </a>
+                        <div class="dropdown-menu">
+                          {% for act in action  %}
+                            {% if act_method|lookup:act == 'modal' %}
+                            <a href="#actionModal" data-toggle='modal' data-href="{{act_link}}{{act}}/{{o.pk}}?back={{full_path}}" {% if act == 'delete' or act == 'approve' %}onclick="return confirm('Are you sure?')"{% endif %} class="dropdown-item action-button act-{{act}}">{{act|title}}</a>
+                            {% elif act_method|lookup:act == 'link' %}
+                            <a href="{{act_link}}{{act}}/{{o.pk}}?back={{full_path}}" {% if act == 'delete' or act == 'approve' %}onclick="return confirm('Are you sure?')"{% endif %} class="dropdown-item action-button act-{{act}}">{{act|title}}</a>
+                            {% endif %}
+                          {% endfor %}
+
+                        </div>
+                      </div>
+                      {% if relation %}
+                        {% for rk,rv in relation.items  %}
+                          <a href="{{rv}}{{o.id}}/list" class="btn btn-info btn-sm">{{rk}}</a>
+                        {% endfor %}
+                    {% endif %}
+                    </div>
+
+                  </td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+          <div class="pagination">
+            <span class="step-links">
+                {% if obj.has_previous %}
+                    <a href="?page=1">&laquo; first</a>
+                    <a href="?page={{ obj.previous_page_number }}">previous</a>
+                {% endif %}
+
+                {% if obj.number %}
+                <span class="current">
+                    Page {{ obj.number }} of {{ obj.paginator.num_pages }}.
+                </span>
+                {% endif %}
+
+                {% if obj.has_next %}
+                    <a href="?page={{ obj.next_page_number }}">next</a>
+                    <a href="?page={{ obj.paginator.num_pages }}">last &raquo;</a>
+                {% endif %}
+            </span>
+        </div>
+  		</div>
+    </div>
+	</div>
+  <div class="modal fade" id="actionModal" tabindex="-2000" role="dialog" aria-labelledby="actionModal" aria-hidden="true">
+    <div class="modal-dialog modal-lg" style="max-width:80vw;" role="document">
+      <div class="modal-content">
+        <div class="modal-header pb-0 pt-0">
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body" >
+          <div id="actionIframe"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endlanguage %}
+{% endblock %}
+
+{% block script %}
+  {{ block.super }}
+
+  {% if multiselectScript %}
+    {% include "ui/_script/selectpicker.html" %}
+  {% endif %}
+  {% if datepickerScript %}
+    {% include "ui/_script/datepicker.html" %}
+  {% endif %}
+
+  <script>
+  // $(".action-button").click(function () {
+  //      var url = $(this).data('href'));
+  //
+  //  });
+   $('#actionModal').on('shown.bs.modal',function(e){      //correct here use 'shown.bs.modal' event which comes in bootstrap3
+      var url = $(e.relatedTarget).data('href');
+     $('#actionIframe').append("<iframe style='width:100%;height:500px;' class='actiondialog' frameBorder='0' src='" + url + "'></iframe>")
+   });
+  $('#actionModal').on('hidden.bs.modal', function () {
+    $('iframe').remove(".actiondialog")
+    location.reload();
+  });
+  // $(document).ready(function(){
+  //
+	// 	$(function () {
+	// 	  $('[data-toggle="popover"]').popover()
+	// 	})
+  //
+  // });
+    // $(document).ready(function(){
+    //
+    //   $(".msg-alert").fadeTo(8000, 500).slideUp(500, function(){
+    //       $(".msg-alert").slideUp(500);
+    //   });
+    //
+    // });
+  </script>
+{% endblock %}

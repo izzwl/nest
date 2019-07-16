@@ -11,6 +11,8 @@ from authnest.views00 import act_logging
 from ui.forms import *
 from datetime import datetime
 
+default_mnactive = 'mnpurchasing0'
+
 def in71(request,template='purchasing/f_in71.html'):
     instance = None
     #instantiate form based on request
@@ -88,6 +90,7 @@ def in71(request,template='purchasing/f_in71.html'):
     ctx = {
         'datetime_picker':True,
         'form':form,
+        'mnactive':default_mnactive,
         'instance':instance,
     }
     return render(request,template,ctx)
@@ -207,6 +210,7 @@ def in72(request,template='purchasing/f_in72.html'):
 
     ctx = {
         'datetime_picker':True,
+        'mnactive':default_mnactive,
         'in71_form':in71_form,
         'in72_formset':in72_formset,
         'in71_instance':in71_instance,
@@ -310,6 +314,7 @@ def in73(request,template='purchasing/f_in73.html'):
 
     ctx = {
         'datetime_picker':True,
+        'mnactive':default_mnactive,
         'in71_form':in71_form,
         'in73_formset':in73_formset,
         'in71_instance':in71_instance,
@@ -337,6 +342,7 @@ def in74(request,template='purchasing/f_in74.html'):
         in74_instances.append(in74_instance)
     ctx = {
         'in74_instances':in74_instances,
+        'mnactive':default_mnactive,
         # 'instance':instance,
     }
     return render(request,template,ctx)
@@ -383,7 +389,7 @@ def in75(request,in73_id,template='purchasing/f_in75.html'):
     else:
         form = FMIN75(instance=in75_instance,error_class=DivErrorList)
 
-    ctx = {'in73_instance':in73_instance,'ivr7020h':ivr7020h,'form':form}
+    ctx = {'in73_instance':in73_instance,'ivr7020h':ivr7020h,'form':form,'mnactive':default_mnactive,}
     return render(request,template,ctx)
     # return HttpResponse(ivr7020h)
 
@@ -391,6 +397,7 @@ def in76(request,template='purchasing/f_in76.html'):
     in76_instances = TMIN76.objects.select_related('f_in73__f_in72__f_in71').all()
     ctx = {
         'in76_instances':in76_instances,
+        'mnactive':default_mnactive,
         # 'instance':instance,
     }
     return render(request,template,ctx)
@@ -411,6 +418,7 @@ def in77(request,template='purchasing/f_in77.html'):
     ctx = {
         'obj':in77_instance,
         'ivr7020h':ivr7020h,
+        'mnactive':default_mnactive,
         # 'instance':instance,
     }
     return render(request,template,ctx)

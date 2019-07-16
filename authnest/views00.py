@@ -13,7 +13,7 @@ def act_logging(nik,trx,func,key):
     ActLog.save()
 
 def home(request,template='authnest/home.html'):
-    return render(request,template)
+    return render(request,template,{'mnactive':'mnhome'})
 
 def login(request,template='authnest/login.html'):
     if request.user.is_authenticated:

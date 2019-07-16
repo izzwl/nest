@@ -9,45 +9,11 @@ from django.core.paginator import Paginator
 from purchasing.forms01 import *
 from purchasing.models import *
 from authnest.views00 import act_logging
+from authnest.helper import get_prev_url,create_prev_url,check_permission,check_fk
 from ui.forms import *
 from datetime import datetime
 
-def get_prev_url(request,default):
-    try:
-        url = request.GET.get('back').replace('///','&')
-    except:
-        url = default
-    return url
-
-def create_prev_url(request):
-    try:
-        url = request.get_full_path().replace('&','///')
-    except:
-        url = '/'
-    return url
-
-def check_permission(request,perm,prev_url,modal=False):
-    if not request.user.is_authenticated:
-        messages.add_message(request, messages.ERROR, 'Please login first')
-        if modal: return redirect('%s?next=%s&modal=Y' % (settings.LOGIN_URL, request.path))
-        return redirect('%s?next=%s' % (settings.LOGIN_URL, request.path))
-    if not request.user.has_perm(perm):
-        messages.add_message(request, messages.ERROR, 'Operations not permitted')
-        return redirect(prev_url)
-    return False
-
-def check_fk(request,fk,model,prev_url,modal=False):
-    try:
-        robj = model.objects.get(pk=fk)
-    except:
-        messages.add_message(request, messages.ERROR, 'Data not found')
-        if modal : return render(request,"ui/message_only.html")
-        return redirect(prev_url)
-    if robj.c_nikappr == '':
-        messages.add_message(request, messages.ERROR, 'Data must be approved')
-        if modal : return render(request,"ui/message_only.html")
-        return redirect(prev_url)
-    return False
+default_mnactive = 'mnpurchasing1'
 
 def in71_list(request,template='ui/list_default.html'):
     if request.method == 'POST':
@@ -78,6 +44,7 @@ def in71_list(request,template='ui/list_default.html'):
     ctx = {
         'obj':obj,
         'judul':judul,
+        'mnactive':default_mnactive,
         'field':field,
         'action':action,
         'act_link':act_link,
@@ -110,6 +77,7 @@ def in71_print(request,pk,template='purchasing/in71_print.html'):
 
     ctx = {
         'judul':judul,
+        'mnactive':default_mnactive,
         'obj':obj,
         'ivr':ivr,
         'prev_url':prev_url,
@@ -156,6 +124,7 @@ def in71_detail(request,pk,template='ui/form_default.html'):
     form = FMIN71(instance=obj,action='detail')
     ctx = {
         'judul':judul,
+        'mnactive':default_mnactive,
         'form':form,
         'prev_url':prev_url,
         'datepickerScript': True,
@@ -178,6 +147,7 @@ def in71_add(request,template='ui/form_default.html'):
         return redirect(request.path)
     ctx = {
         'judul':judul,
+        'mnactive':default_mnactive,
         'form':form,
         'prev_url':prev_url,
         'datepickerScript': True,
@@ -203,6 +173,7 @@ def in71_change(request,pk,template='ui/form_default.html'):
         return redirect(request.path)
     ctx = {
         'judul':judul,
+        'mnactive':default_mnactive,
         'form':form,
         'prev_url':prev_url,
         'datepickerScript': True,
@@ -270,6 +241,7 @@ def in72_list(request,fk,template='ui/list_default.html'):
     ctx = {
         'obj':obj,
         'judul':judul,
+        'mnactive':default_mnactive,
         'field':field,
         'prev_url':prev_url,
         'action':action,
@@ -298,6 +270,7 @@ def in72_add(request,fk,template='ui/form_default.html'):
         return redirect(request.path)
     ctx = {
         'judul':judul,
+        'mnactive':default_mnactive,
         'form':form,
         'prev_url':prev_url,
         'datepickerScript': True,
@@ -323,6 +296,7 @@ def in72_change(request,fk,pk,template='ui/form_default.html'):
         return redirect(request.path)
     ctx = {
         'judul':judul,
+        'mnactive':default_mnactive,
         'form':form,
         'prev_url':prev_url,
         'datepickerScript': True,
@@ -408,6 +382,7 @@ def in73_list(request,fk,template='ui/list_default.html'):
     ctx = {
         'obj':obj,
         'judul':judul,
+        'mnactive':default_mnactive,
         'field':field,
         'prev_url':prev_url,
         'action':action,
@@ -438,6 +413,7 @@ def in73_add(request,fk,ook,template='ui/form_default.html'):
         return redirect(request.path)
     ctx = {
         'judul':judul,
+        'mnactive':default_mnactive,
         'form':form,
         'prev_url':prev_url,
         'datepickerScript': True,

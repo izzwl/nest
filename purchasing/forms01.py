@@ -9,6 +9,18 @@ from django.forms.models import formset_factory
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Layout, Submit, Row, Column
 
+class RangeDateForm(forms.Form):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.helper = FormHelper()
+        self.helper.form_class = 'form-horizontal'
+        self.helper.label_class = 'col-lg-2'
+        self.helper.field_class = 'col-lg-8'
+        self.helper.add_input(Submit("submit", "Submit"))
+
+    begin_date = forms.DateField()
+    end_date = forms.DateField()
+
 class FMIN71(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
@@ -229,5 +241,5 @@ class FMIN73(forms.ModelForm):
         }
         widgets = {
             'i_qacc' : forms.NumberInput(attrs={'required':'required'}),
-        
+
         }

@@ -76,6 +76,7 @@ class IVR7020H(models.Model):
 class TMIN71(models.Model):
     d_create = models.DateField(null=True,blank=True)
     c_nik = models.CharField(max_length=6,blank=True)
+    d_appr = models.DateField(null=True,blank=True)
     c_nikappr = models.CharField(max_length=6,blank=True)
     c_po = models.CharField(max_length=8,blank=True)
     d_received = models.DateField(null=True,blank=True)
@@ -92,7 +93,7 @@ class TMIN71(models.Model):
     d_hawb = models.DateField(null=True,blank=True)
     c_bc23 = models.CharField(max_length=20,blank=True)
     d_bc23 = models.DateField(null=True,blank=True)
-    c_aju = models.CharField(max_length=29,blank=True)
+    c_aju = models.CharField(max_length=26,blank=True)
     d_aju = models.DateField(null=True,blank=True)
 
     def __str__(self):
@@ -112,6 +113,7 @@ class TMIN72(models.Model):
     d_create = models.DateField(null=True,blank=True)
     f_in71 = models.ForeignKey(TMIN71, on_delete=models.CASCADE)
     c_nik = models.CharField(max_length=6,blank=True)
+    d_appr = models.DateField(null=True,blank=True)
     c_nikappr = models.CharField(max_length=6,blank=True)
     i_itemno = models.PositiveIntegerField(blank=True)
     i_qreceived = models.FloatField(blank=True)

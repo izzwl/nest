@@ -1,3 +1,4 @@
+import io
 from django.shortcuts import render, redirect
 from django.db.models import F,Q,Max,Prefetch
 from django.http import HttpResponse
@@ -8,6 +9,7 @@ from django.forms import modelformset_factory
 from django.core.paginator import Paginator
 from purchasing.forms01 import *
 from purchasing.models import *
+from purchasing.views01E import in71_export_prn,in72_export_prn
 from authnest.views00 import act_logging
 from authnest.helper import get_prev_url,create_prev_url,check_permission,check_fk
 from ui.forms import *
@@ -52,6 +54,7 @@ def in71_list(request,template='ui/list_default.html'):
         'full_path':full_path,
         'relation':relation,
         'can_add':True,
+        'export':'/purchasing-v1/in71/in72/in73/prn/',
     }
     return render(request,template,ctx)
 
@@ -202,6 +205,7 @@ def in71_approve(request,pk):
     try:
         obj = TMIN71.objects.get(pk=pk)
         obj.c_nikappr = request.user.get_username()
+        obj.d_appr = datetime.now()
         obj.save()
         messages.add_message(request, messages.SUCCESS, 'Successfully Approved')
     except:
@@ -326,6 +330,7 @@ def in72_approve(request,fk,pk):
     try:
         obj = TMIN72.objects.get(pk=pk)
         obj.c_nikappr = request.user.get_username()
+        obj.d_appr = datetime.now()
         obj.save()
         messages.add_message(request, messages.SUCCESS, 'Successfully Approved')
     except:
@@ -341,6 +346,7 @@ def in72_approve_all(request,fk):
         objs = TMIN72.objects.filter(f_in71__pk=fk)
         for obj in objs:
             obj.c_nikappr = request.user.get_username()
+            obj.d_appr = datetime.now()
             obj.save()
         messages.add_message(request, messages.SUCCESS, 'Successfully Approved')
     except:
@@ -411,6 +417,35 @@ def in73_add(request,fk,ook,template='ui/form_default.html'):
         obj.save()
         messages.add_message(request, messages.SUCCESS, '%s berhasil ditambahkan'%obj)
         return redirect(request.path)
+    ctx = {
+        'judul':judul,
+        'mnactive':default_mnactive,
+        'form':form,
+        'prev_url':prev_url,
+        'datepickerScript': True,
+        'submit': True,
+    }
+    return render(request,template,ctx)
+
+def in71_in72_in73_prn_get(request,template='ui/form_default.html'):
+    prev_url = get_prev_url(request,'/purchasing-v1/in71/list')
+    perm = check_permission(request,'purchasing.add_tmin73',prev_url,True)
+    if perm: return perm
+    import zipfile
+    judul = 'IN71 IN72 IN73 PRN Download'
+    form = RangeDateForm(request.POST or None)
+    if form.is_valid():
+        zip_filename = "IN71_IN72_IN73"
+        b = form.cleaned_data['begin_date']
+        e = form.cleaned_data['end_date']
+        io_zip = io.BytesIO()
+        myzip = zipfile.ZipFile(io_zip, 'w')
+        myzip.writestr('in71.txt',in71_export_prn(b,e))
+        myzip.writestr('in72.txt',in72_export_prn(b,e))
+        myzip.close()
+        resp = HttpResponse(io_zip.getvalue(), content_type="application/x-zip-compressed")
+        resp['Content-Disposition'] = 'attachment; filename=%s_%s-%s.zip' % (zip_filename,b.strftime("%y%m%d"),e.strftime("%y%m%d"))
+        return resp
     ctx = {
         'judul':judul,
         'mnactive':default_mnactive,

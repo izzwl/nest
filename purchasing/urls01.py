@@ -12,6 +12,7 @@ urlpatterns = [
     path('in71/delete/<int:pk>/',views01.in71_delete, name="in71_delete"),
     path('in71/approve/<int:pk>/',views01.in71_approve, name="in71_approve"),
     path('in71/print/<int:pk>/',views01.in71_print, name="in71_print"),
+    path('in71/in72/in73/prn/',views01.in71_in72_in73_prn_get, name="in71_in72_in73_prn_get"),
 
     path('in72/<int:fk>/list',views01.in72_list, name="in72_list"),
     path('in72/<int:fk>/add/',views01.in72_add, name="in72_add"),

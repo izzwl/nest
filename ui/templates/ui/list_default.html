@@ -19,7 +19,7 @@
             {{ judul }}
 
           {% if can_add %}<a href="#actionModal" data-toggle="modal" class="btn btn-sm btn-primary " data-href="{{act_link}}add?back={{full_path}}"><i class="fa fa-plus"></i> Add</a>{% endif %}
-
+          {% if export %}<a href="#actionModal" data-toggle="modal" class="btn btn-sm btn-primary " data-href="{{export}}?back={{full_path}}"><i class="fa fa-file-archive-o"></i> Export</a>{% endif %}
 
         </h1>
         {% block alert %}

@@ -96,9 +96,8 @@ class FMIN71(forms.ModelForm):
 
     class Meta:
         model = TMIN71
-        exclude = ['d_create','c_nik']
+        exclude = ['d_create','d_appr','c_nik']
         labels = {
-            'd_create' : 'CREATE',
             'c_nikappr' : 'APPR',
             'c_po' : 'MASTER#',
             'd_received' : 'DATE-RECEIVED',

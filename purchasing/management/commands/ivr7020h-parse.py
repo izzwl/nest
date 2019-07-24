@@ -1,4 +1,5 @@
 from datetime import datetime
+from django.conf import settings
 from django.core.management.base import BaseCommand, CommandError
 from purchasing.models import IVR7020H
 from django.utils import timezone
@@ -8,6 +9,7 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         FILE='/home/nest/public_html/media/prn/IVR7020H'
+        IVR7020H.objects.all().delete()
         f = open(FILE, "r")
         i = 0
         for l in f.readlines():

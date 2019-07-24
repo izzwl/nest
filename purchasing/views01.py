@@ -9,7 +9,7 @@ from django.forms import modelformset_factory
 from django.core.paginator import Paginator
 from purchasing.forms01 import *
 from purchasing.models import *
-from purchasing.views01E import in71_export_prn,in72_export_prn
+from purchasing.views01E import in71_export_prn,in72_export_prn,in73_export_prn
 from authnest.views00 import act_logging
 from authnest.helper import get_prev_url,create_prev_url,check_permission,check_fk
 from ui.forms import *
@@ -442,6 +442,7 @@ def in71_in72_in73_prn_get(request,template='ui/form_default.html'):
         myzip = zipfile.ZipFile(io_zip, 'w')
         myzip.writestr('in71.txt',in71_export_prn(b,e))
         myzip.writestr('in72.txt',in72_export_prn(b,e))
+        myzip.writestr('in73.txt',in73_export_prn(b,e))
         myzip.close()
         resp = HttpResponse(io_zip.getvalue(), content_type="application/x-zip-compressed")
         resp['Content-Disposition'] = 'attachment; filename=%s_%s-%s.zip' % (zip_filename,b.strftime("%y%m%d"),e.strftime("%y%m%d"))

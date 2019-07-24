@@ -18,7 +18,8 @@ def in71_export_prn(b,e):
     PO040001190524123456789012345678901234567890123456789012345678907374031234567812345678901234567890123456789123456789012345678901905241234567890121905241905281234567890123456789012190524123456789012345678901234561905241905287374031
     OK......OK....OK..................OK..................OK........OK....OK......OK...........................12345678901234567890OK....OK..........OK....OK....OK..................OK......OK........................OK....1234561234561
     """
-    prn = "PO......TGLDATINVOICE-NO..........PACKLIST............BOX-NO....RCV-BYCERT....OTHER........................AWB.................TGL...HAWB........TGL...TGL...BPBI/BPBL...........NATGL-BCNOMOR-AJU.................TGL...TGLAPRNIKAPRC\n"
+    # prn = "PO......TGLDATINVOICE-NO..........PACKLIST............BOX-NO....RCV-BYCERT....OTHER........................AWB.................TGL...HAWB........TGL...TGL...BPBI/BPBL...........NATGL-BCNOMOR-AJU.................TGL...TGLAPRNIKAPRC\n"
+    prn = ""
     for o in objs:
         prn += "{}{}{}{}{}{}{}{}{}{}{}{}{}{}{}{}{}{}{}{}{}\n".format(
             o.c_po.upper(),
@@ -53,31 +54,73 @@ def in72_export_prn(b,e):
         except:
             return ex
 
-    objs = TMIN72.objects.select_related('tmin73','f_in71').filter(Q(d_create__gte=b) & Q(d_create__lte=e))
+    objs = TMIN72.objects.select_related('f_in71').filter(Q(f_in71__d_create__gte=b) & Q(f_in71__d_create__lte=e))
     """
-    PO......TGLDATITMSESHIP...DAT....PARTIN..............BY....TGLAPRNIKAPR
-    12345678123456123111234567123456712345678901234567890123456123456123456
-    PO990001123456123111234567123456712345678901234567890123456123456123456
-    PO990001190524123111234567123456712345678901234567890123456123456123456
-    PO990001190524001110000100000020012345678901234567890123456123456123456
-    PO9900011905240011100001000000100                    737403190618737403
-    PO9900011905240011100001000000100600220484           737403190618737403
-    PO9800091906180021100001000000100                    737403190618737403
-    ok......ok....ok.oook...,,DAT....PARTIN..............BY....TGLAPRNIKAPR
+    PO......TGLDATITMSHIP...DAT....PARTIN..............BY....TGLAPRNIKAPR
+    123456781234561231234567123456712345678901234567890123456123456123456
+    PO9900011234561231234567123456712345678901234567890123456123456123456
+    PO9900011905241231234567123456712345678901234567890123456123456123456
+    PO9900011905240010000100000020012345678901234567890123456123456123456
+    PO99000119052400100001000000100                    737403190618737403
+    PO99000119052400100001000000100600220484           737403190618737403
+    PO98000919061800200001000000100                    737403190618737403
+    ok......ok....ok.ok...,,DAT....PARTIN..............BY....TGLAPRNIKAPR
     """
-    prn = "PO......TGLDATITMSESHIP...DAT....PARTIN..............BY....TGLAPRNIKAPR\n"
+    # prn = "PO......TGLDATITMSHIP...DAT....PARTIN..............BY....TGLAPRNIKAPR\n"
+    prn = ""
     for o in objs:
-        prn += "{}{}{}{}{}{}{}{}{}{}{}\n".format(
+        prn += "{}{}{}{}{}{}{}{}{}\n".format(
             o.f_in71.c_po.upper(),
             o.f_in71.d_received.strftime("%y%m%d"),
             str(o.i_itemno).rjust(3,'0'),
-            getattr(getattr(o,'tmin73',' '),'c_cert',' '),
-            getattr(getattr(o,'tmin73',' '),'c_e',' '),
             str("%08.2f"%o.i_qship).replace(',','').replace('.',''),
             str("%08.2f"%o.i_qreceived).replace(',','').replace('.',''),
             o.c_partin.ljust(20),
             o.c_nik or ''.ljust(6),
             o.d_appr.strftime("%y%m%d"),
             o.c_nikappr or ''.ljust(6),
+        )
+    return prn
+
+def in73_export_prn(b,e):
+    # prn = io.StringIO()
+    def try_except(tr,ex):
+        try:
+            return tr
+        except:
+            return ex
+
+    objs = TMIN73.objects.select_related('f_in72__f_in71').filter(Q(f_in72__f_in71__d_create__gte=b) & Q(f_in72__f_in71__d_create__lte=e))
+    """
+    PO......TGLDATITMSEKQACC...INSPDTINSPBY
+    123456781234561231111234567123456123456
+    PO9900011234561231111234567123456123456
+    PO9900011234561231111234567123456123456
+    PO9900019901291231111234567123456123456
+    PO990001990129001XXX1234567123456123456
+    PO980009190618002XXX1234567123456123456
+    PO9800091906180021XX1234567123456123456
+    PO98000919061800211X1234567123456123456
+    PO9800091906180021141234567123456123456
+    PO9800091906180021111234567123456123456
+    PO9800091906180021111234567123456123456
+    PO9800091906180021110000100190722737403
+    PO9800091906180032210000100190722737403
+    PO9800091906180041110000500190722737403
+    PO9800091906180051110000500190722737403
+    """
+    # prn = "PO......TGLDATITMSEKQACC...INSPDTINSPBY\n"
+    prn = ""
+    for o in objs:
+        prn += "{}{}{}{}{}{}{}{}{}\n".format(
+            o.f_in72.f_in71.c_po.upper(),
+            o.f_in72.f_in71.d_received.strftime("%y%m%d"),
+            str(o.f_in72.i_itemno).rjust(3,'0'),
+            o.c_cert or ''.ljust(1),
+            o.c_e or ''.ljust(1),
+            o.c_cond or ''.ljust(1),
+            str("%08.2f"%o.i_qacc).replace(',','').replace('.',''),
+            o.d_create.strftime("%y%m%d"),
+            o.c_nik or ''.ljust(6),
         )
     return prn
